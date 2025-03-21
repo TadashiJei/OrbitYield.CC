@@ -122,9 +122,8 @@ export default function Support() {
                   answer: "OrbitYield currently supports Ethereum, Binance Smart Chain, Polygon, Avalanche, Solana, Fantom, Arbitrum, Optimism, and more. We're continuously adding support for additional blockchains.",
                 },
                 {
-                  question: "How does OrbitYield ensure the security of my funds?",\
-                  answer: "OrbitYield employs a non-custodial architecture, meaning you maintain full control of your assets at all times. Our smart contracts are audited by leading security firms, and we implement multiple layers of security measures
- to protect your assets.",
+                  question: "How does OrbitYield ensure the security of my funds?",
+                  answer: "OrbitYield employs a non-custodial architecture, meaning you maintain full control of your assets at all times. Our smart contracts are audited by leading security firms, and we implement multiple layers of security measures to protect your assets.",
                 },
                 {
                   question: "What are the fees for using OrbitYield?",
@@ -355,9 +354,9 @@ export default function Support() {
                   <textarea
                     id="message"
                     name="message"
-                    rows={6}
+                    rows={4}
                     className="block w-full rounded-md border-gray-300 px-4 py-3 shadow-sm focus:border-primary focus:ring-primary"
-                  ></textarea>
+                  />
                 </div>
               </div>
               <div className="sm:col-span-2">
@@ -372,4 +371,3 @@ export default function Support() {
     </div>
   )
 }
-
