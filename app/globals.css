@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 336 100% 58%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 78 100% 52%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 180 100% 52%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 336 100% 58%;
+
+    --radius: 0.5rem;
+
+    --font-sans: var(--font-unbounded), system-ui, sans-serif;
+
+    /* Storm colors */
+    --storm-200: 216 31% 89%;
+    --storm-400: 221 24% 74%;
+    --storm-700: 232 13% 50%;
+
+    /* Additional brand colors */
+    --violet: 264 90% 52%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 336 100% 58%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 78 100% 52%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 180 100% 52%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 336 100% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Improve tap targets on mobile */
+  button,
+  a {
+    @apply touch-manipulation;
+  }
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #ff2670 0%, #7916f3 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ff2670 0%, #7916f3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #ff2670 0%, #7916f3 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Add these animation classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+  will-change: opacity;
+}
+
+.animate-slide-in {
+  animation: slideInUp 0.8s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Stagger animations with delays */
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+
+/* Refined button styles */
+.btn-primary {
+  @apply bg-primary/90 text-white hover:bg-primary transition-colors;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 transition-colors;
+}
+
+.btn-accent {
+  @apply bg-accent text-accent-foreground hover:bg-accent/90 transition-colors;
+}
+
+.btn-ghost {
+  @apply bg-transparent text-gray-900 hover:bg-gray-100 transition-colors;
+}
+
+/* Mobile menu transitions */
+.mobile-menu-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.mobile-menu-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.mobile-menu-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mobile-menu-exit-active {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Responsive text adjustments */
+@media (max-width: 640px) {
+  h1 {
+    letter-spacing: -0.025em;
+  }
+
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+  }
+}
+
+/* Fix for mobile Safari overflow issues */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
