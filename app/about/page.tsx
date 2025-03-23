@@ -130,7 +130,7 @@ export default function AboutPage() {
           <div className="mx-auto mt-16 max-w-2xl lg:mx-0 lg:max-w-none">
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 text-base leading-7 text-gray-600 sm:grid-cols-2 md:flex lg:gap-x-10">
               {[
-                { text: "Founded in 2025, icon: Rocket },
+                { text: "Founded in 2025", icon: Rocket },
                 { text: "Supporting 10+ blockchains", icon: Globe },
                 { text: "Industry-leading security", icon: Shield },
                 { text: "Award-winning platform", icon: Award },
