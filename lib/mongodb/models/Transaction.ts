@@ -85,7 +85,7 @@ const TransactionSchema: Schema = new Schema(
 );
 
 // Create indexes for efficient querying
-TransactionSchema.index({ txHash: 1 });
+// txHash index is already created by the unique: true property in the schema
 TransactionSchema.index({ createdAt: -1 });
 TransactionSchema.index({ walletAddress: 1, type: 1 });
 TransactionSchema.index({ walletAddress: 1, status: 1 });
