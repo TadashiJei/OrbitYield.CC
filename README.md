@@ -1,6 +1,6 @@
 # OrbitYield - Cross-Chain Yield Aggregator
 
-![OrbitYield Logo](public/placeholder.svg)
+![OrbitYield Logo](public/Original-Logo.png)
 
 ## 🚀 Overview
 

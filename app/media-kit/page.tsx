@@ -253,7 +253,7 @@ export default function MediaKit() {
                   OrbitYield is an AI-powered cross-chain yield aggregator that automatically allocates funds to the highest-yielding opportunities across multiple blockchains. Our platform combines advanced algorithms with real-time data analysis to optimize investment strategies for both retail and institutional users.
                 </p>
                 <p className="text-gray-600">
-                  Founded in 2024, OrbitYield is committed to making DeFi more accessible, efficient, and secure for users worldwide.
+                  Founded in 2025, OrbitYield is committed to making DeFi more accessible, efficient, and secure for users worldwide.
                 </p>
               </div>
 

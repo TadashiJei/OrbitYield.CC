@@ -22,6 +22,7 @@ const navigation = {
     { name: "Support", href: "/support" },
     { name: "FAQ", href: "/faq" },
     { name: "Contact", href: "/contact" },
+    { name: "Changelog", href: "/changelog" },
   ],
   company: [
     { name: "About", href: "/about" },
