@@ -12,6 +12,7 @@ const navigation = [
   { name: "Overview", href: "/overview" },
   { name: "Features", href: "/features" },
   { name: "Ecosystem", href: "/ecosystem" },
+  { name: "Portfolio", href: "/portfolio" },
   { name: "Community", href: "/community" },
   { name: "Developers", href: "/developers" },
 ]
@@ -81,9 +82,11 @@ export default function Header() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Button className="rounded-full bg-primary/90 hover:bg-primary text-white transition-colors">
-            Launch App
-          </Button>
+          <Link href="/dashboard">
+            <Button className="rounded-full bg-primary/90 hover:bg-primary text-white transition-colors">
+              Launch App
+            </Button>
+          </Link>
         </div>
       </nav>
 
@@ -145,9 +148,11 @@ export default function Header() {
                 ))}
               </div>
               <div className="py-6">
-                <Button className="w-full rounded-full bg-primary/90 hover:bg-primary text-white transition-colors">
-                  Launch App
-                </Button>
+                <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full rounded-full bg-primary/90 hover:bg-primary text-white transition-colors">
+                    Launch App
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

@@ -1,10 +1,7 @@
-import type React from "react"
 import type { Metadata } from "next"
 import { Unbounded } from "next/font/google"
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import RootClientLayout from "./RootClientLayout"
 
 const unbounded = Unbounded({
   subsets: ["latin"],
@@ -54,15 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${unbounded.variable} font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <div className="flex min-h-screen flex-col bg-gray-50">
-            {" "}
-            {/* Changed background color */}
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+        <RootClientLayout>{children}</RootClientLayout>
       </body>
     </html>
   )
