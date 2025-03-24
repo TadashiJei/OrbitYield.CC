@@ -3,22 +3,24 @@ import { ethers } from 'ethers';
 // Types for yield opportunities
 export interface YieldOpportunity {
   id: string;
-  strategyAddress: string;
-  strategyType: 'lending' | 'farming' | 'liquidity';
+  strategyAddress?: string;
+  strategyType: 'lending' | 'farming' | 'liquidity' | 'staking';
   protocolName: string;
-  assetAddress: string;
+  assetAddress?: string;
   assetSymbol: string;
   apy: number; // APY in basis points (e.g., 500 = 5%)
   tvl: string; // Total Value Locked in wei
-  minDeposit: string; // Minimum deposit in wei
+  minDeposit?: string;
   risk: number; // Risk score from 1 (lowest) to 10 (highest)
-  rewardTokens?: string[]; // Optional reward token addresses
-  poolAddress?: string; // Optional pool address
-  lpTokenAddress?: string; // Optional LP token address (for liquidity strategies)
-  pairAssetAddress?: string; // Optional pair asset address (for liquidity strategies)
-  lockupPeriod?: number; // Optional lockup period in seconds
-  isActive: boolean;
-  lastUpdated: number; // Unix timestamp
+  rewardTokens?: string[];
+  poolAddress?: string;
+  lpTokenAddress?: string;
+  pairAssetAddress?: string;
+  lockupPeriod?: number;
+  isActive?: boolean;
+  lastUpdated?: number;
+  chainId?: number;
+  chain?: string;
 }
 
 // Interface for strategy contracts
@@ -112,7 +114,7 @@ export class YieldOptimizer {
       
       // Filter opportunities by asset
       const assetOpportunities = opportunities.filter(
-        opp => opp.assetAddress.toLowerCase() === assetAddress.toLowerCase() && opp.isActive
+        opp => opp.assetAddress?.toLowerCase() === assetAddress.toLowerCase() && opp.isActive
       );
       
       if (assetOpportunities.length === 0) {
@@ -174,7 +176,7 @@ export class YieldOptimizer {
         // User-defined allocations
         for (const [assetAddress, percentage] of Object.entries(assetAllocations)) {
           const assetOpportunities = filteredOpportunities.filter(
-            opp => opp.assetAddress.toLowerCase() === assetAddress.toLowerCase()
+            opp => opp.assetAddress?.toLowerCase() === assetAddress.toLowerCase()
           );
           
           if (assetOpportunities.length > 0) {
@@ -256,7 +258,7 @@ export class YieldOptimizer {
         preferences.preferredAssets &&
         preferences.preferredAssets.length > 0 &&
         !preferences.preferredAssets.some(
-          asset => asset.toLowerCase() === opp.assetAddress.toLowerCase()
+          asset => asset.toLowerCase() === opp.assetAddress?.toLowerCase()
         )
       ) {
         return false;
@@ -296,7 +298,7 @@ export class YieldOptimizer {
       if (
         preferences.excludedAssets &&
         preferences.excludedAssets.some(
-          asset => asset.toLowerCase() === opp.assetAddress.toLowerCase()
+          asset => asset.toLowerCase() === opp.assetAddress?.toLowerCase()
         )
       ) {
         return false;

@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 // List of paths that are part of the app (not marketing site)
 const APP_PATHS = [
   '/dashboard',
+  '/portfolio',
   '/investments',
   '/opportunities',
   '/transactions',

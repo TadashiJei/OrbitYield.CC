@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { formatCurrency, formatPercent } from '@/lib/utils';
 
 interface PositionData {
   strategy: string;
@@ -31,7 +32,15 @@ interface PositionData {
   valueUSD: number;
 }
 
-export function PortfolioSummary() {
+interface PortfolioSummaryProps {
+  compact?: boolean;
+  onValueCalculated?: (totalValue: number) => void;
+}
+
+export function PortfolioSummary({ 
+  compact = false,
+  onValueCalculated 
+}: PortfolioSummaryProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [positions, setPositions] = useState<PositionData[]>([]);
@@ -122,6 +131,11 @@ export function PortfolioSummary() {
       // Calculate portfolio totals
       const totalValue = enrichedPositions.reduce((sum, pos) => sum + pos.valueUSD, 0);
       setTotalValueUSD(totalValue);
+      
+      // Notify parent component about the calculated value
+      if (onValueCalculated) {
+        onValueCalculated(totalValue);
+      }
       
       // Calculate estimated yield
       const totalYield = enrichedPositions.reduce((sum, pos) => {
@@ -234,15 +248,12 @@ export function PortfolioSummary() {
   
   // Format currency display
   const formatUSD = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(value);
+    return formatCurrency(value);
   };
   
   // Format APY
   const formatAPY = (apy: number) => {
-    return (apy / 100).toFixed(2) + '%';
+    return formatPercent(apy / 10000);
   };
   
   // Calculate time in strategy
@@ -271,71 +282,75 @@ export function PortfolioSummary() {
         </Alert>
       ) : loading ? (
         <div className="space-y-4">
-          <Skeleton className="h-12 w-1/3" />
+          {!compact && <Skeleton className="h-12 w-1/3" />}
           <Skeleton className="h-[200px] w-full" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Skeleton className="h-[100px] w-full" />
-            <Skeleton className="h-[100px] w-full" />
-            <Skeleton className="h-[100px] w-full" />
-          </div>
+          {!compact && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Skeleton className="h-[100px] w-full" />
+              <Skeleton className="h-[100px] w-full" />
+              <Skeleton className="h-[100px] w-full" />
+            </div>
+          )}
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardDescription>Total Portfolio Value</CardDescription>
-                <CardTitle className="text-2xl">{formatUSD(totalValueUSD)}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center">
-                  <Wallet className="h-4 w-4 mr-2 text-gray-500" />
-                  <span className="text-sm text-gray-500">
-                    {positions.length} active position{positions.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardDescription>Estimated Annual Yield</CardDescription>
-                <CardTitle className="text-2xl text-green-600">{formatUSD(totalYieldUSD)}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center">
-                  <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
-                  <span className="text-sm text-gray-500">
-                    {totalValueUSD > 0 
-                      ? (totalYieldUSD / totalValueUSD * 100).toFixed(2) + '% APY average' 
-                      : '0% APY average'}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardDescription>Asset Allocation</CardDescription>
-                <CardTitle className="text-2xl">{chartData.length} Asset{chartData.length !== 1 ? 's' : ''}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {chartData.slice(0, 3).map((item) => (
-                    <div key={item.name} className="flex items-center justify-between text-sm">
-                      <span>{item.name}</span>
-                      <span>{item.percentage}%</span>
-                    </div>
-                  ))}
-                  {chartData.length > 3 && (
-                    <div className="text-xs text-gray-500 text-right">
-                      +{chartData.length - 3} more assets
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {!compact && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Total Portfolio Value</CardDescription>
+                  <CardTitle className="text-2xl">{formatUSD(totalValueUSD)}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center">
+                    <Wallet className="h-4 w-4 mr-2 text-gray-500" />
+                    <span className="text-sm text-gray-500">
+                      {positions.length} active position{positions.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Estimated Annual Yield</CardDescription>
+                  <CardTitle className="text-2xl text-green-600">{formatUSD(totalYieldUSD)}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
+                    <span className="text-sm text-gray-500">
+                      {totalValueUSD > 0 
+                        ? formatPercent(totalYieldUSD / totalValueUSD) + ' average' 
+                        : '0% APY average'}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Asset Allocation</CardDescription>
+                  <CardTitle className="text-2xl">{chartData.length} Asset{chartData.length !== 1 ? 's' : ''}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {chartData.slice(0, 3).map((item) => (
+                      <div key={item.name} className="flex items-center justify-between text-sm">
+                        <span>{item.name}</span>
+                        <span>{item.percentage}%</span>
+                      </div>
+                    ))}
+                    {chartData.length > 3 && (
+                      <div className="text-xs text-gray-500 text-right">
+                        +{chartData.length - 3} more assets
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
           
           <Card>
             <CardHeader>
@@ -344,7 +359,7 @@ export function PortfolioSummary() {
                   <CardTitle>Active Positions</CardTitle>
                   <CardDescription>Your currently active yield strategies</CardDescription>
                 </div>
-                <Button onClick={handleInvestMore}>Invest More</Button>
+                {!compact && <Button onClick={handleInvestMore}>Invest More</Button>}
               </div>
             </CardHeader>
             <CardContent>

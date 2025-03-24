@@ -312,7 +312,7 @@ export default function IntroductionPage() {
           </div>
           
           <div className="text-center">
-            <a href="https://app.orbityield.cc" className="inline-block bg-white text-purple-700 font-semibold px-8 py-3 rounded-lg text-lg hover:bg-gray-100 transition duration-200">
+            <a href="https://orbityield.cc/dashboard" className="inline-block bg-white text-purple-700 font-semibold px-8 py-3 rounded-lg text-lg hover:bg-gray-100 transition duration-200">
               Launch App
             </a>
           </div>

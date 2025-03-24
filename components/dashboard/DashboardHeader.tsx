@@ -16,7 +16,8 @@ import {
   Settings,
   LogOut,
   Bell,
-  ChevronDown
+  ChevronDown,
+  PieChart
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -32,6 +33,7 @@ import { useDisconnect } from "wagmi";
 // App navigation items
 const appNavigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Portfolio", href: "/portfolio", icon: PieChart },
   { name: "Investments", href: "/investments", icon: CircleDollarSign },
   { name: "Opportunities", href: "/opportunities", icon: BarChart3 },
   { name: "Transactions", href: "/transactions", icon: BarChart3 },

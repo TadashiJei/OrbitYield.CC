@@ -69,14 +69,22 @@ export default function MetaMaskConnector({
 
   // Connect to MetaMask
   const connectWallet = useCallback(async () => {
-    if (!isMetaMaskAvailable) {
-      setError('MetaMask is not installed. Please install MetaMask to continue.');
-      return;
-    }
-
     try {
       setIsConnecting(true);
       setError(null);
+      
+      // Check if MetaMask is available
+      if (!isMetaMaskAvailable) {
+        // Try to check again at runtime
+        if (typeof window !== 'undefined' && window.ethereum) {
+          console.log('MetaMask detected at runtime');
+          // Continue with connection
+        } else {
+          setError('MetaMask is not installed. Please install MetaMask to continue.');
+          setIsConnecting(false);
+          return;
+        }
+      }
       
       // Force disconnect first to clear any stale state
       disconnect();
@@ -176,7 +184,7 @@ export default function MetaMaskConnector({
           variant={buttonVariant}
           size={buttonSize}
           onClick={connectWallet}
-          disabled={isConnecting || !isMetaMaskAvailable}
+          disabled={isConnecting || false}
           className="flex items-center justify-center w-full py-6 text-lg font-medium"
         >
           <Wallet className="mr-2 h-5 w-5" />
