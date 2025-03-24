@@ -12,6 +12,7 @@ import { Loader2, AlertCircle, RefreshCcw, BarChart3, History, PieChart, Sliders
 import { toast } from "@/components/ui/use-toast";
 import { useWallet } from '@/hooks/useWallet';
 import { PortfolioRebalancer, RebalancingAction } from '@/components/yield/PortfolioRebalancer';
+import { Calendar } from '@/components/ui/calendar'; // Import the Calendar component
 
 export default function PortfolioPage() {
   const { address, isConnected, connectWallet, disconnect } = useWallet();
@@ -96,6 +97,7 @@ export default function PortfolioPage() {
   };
   
   return (
+    // Using the DateProvider from RootClientLayout, no need to wrap again
     <div className="container mx-auto py-8 space-y-6">
       <h1 className="text-3xl font-bold">Your Portfolio</h1>
       <p className="text-gray-600">

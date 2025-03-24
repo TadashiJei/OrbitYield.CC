@@ -6,6 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLinkIcon } from 'lucide-react';
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface TransferHistoryProps {
   address: string;
@@ -179,7 +181,10 @@ export function TransferHistory({ address }: TransferHistoryProps) {
                       href={getChainExplorerUrl(transfer.sourceChain, transfer.txHash)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 inline-flex items-center"
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "sm" }),
+                        "text-xs"
+                      )}
                     >
                       View
                       <ExternalLinkIcon className="h-3 w-3 ml-1" />

@@ -10,8 +10,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertCircle, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { toast } from '@/components/ui/use-toast';
+import Link from 'next/link';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { formatTimestamp } from '@/providers/DateProvider';
 
 interface Transaction {
@@ -189,9 +190,9 @@ export function TransactionHistory() {
   };
   
   // View transaction on block explorer
-  const viewTransaction = (hash: string) => {
+  const getTransactionUrl = (hash: string) => {
     // In a real app, you would use the correct block explorer URL for the network
-    window.open(`https://etherscan.io/tx/${hash}`, '_blank');
+    return `https://etherscan.io/tx/${hash}`;
   };
 
   return (
@@ -263,13 +264,16 @@ export function TransactionHistory() {
                           </span>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => viewTransaction(tx.transactionHash)}
+                          <Link 
+                            href={getTransactionUrl(tx.transactionHash)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cn(
+                              buttonVariants({ variant: "outline", size: "sm" })
+                            )}
                           >
                             View
-                          </Button>
+                          </Link>
                         </TableCell>
                       </TableRow>
                     ))}

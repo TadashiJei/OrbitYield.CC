@@ -3,6 +3,8 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
+import { format } from "date-fns"
+import enUS from 'date-fns/locale/en-US'
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -16,7 +18,27 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
-  const { locale } = useDateAdapter();
+  // Use try/catch to handle cases where DateProvider might not be available
+  let dateAdapter;
+  try {
+    dateAdapter = useDateAdapter();
+  } catch (error) {
+    // Fallback formatters if DateProvider is not available
+    dateAdapter = {
+      locale: enUS,
+      utils: {
+        formatters: {
+          formatDay: (date: Date) => format(date, 'd', { locale: enUS }),
+          formatMonth: (date: Date) => format(date, 'MMMM', { locale: enUS }),
+          formatMonthCaption: (date: Date) => format(date, 'MMMM yyyy', { locale: enUS }),
+          formatWeekday: (date: Date) => format(date, 'EEEEEE', { locale: enUS }),
+          formatYearCaption: (date: Date) => format(date, 'yyyy', { locale: enUS })
+        }
+      }
+    };
+  }
+  
+  const { locale, utils } = dateAdapter;
   
   return (
     <DayPicker
@@ -49,7 +71,7 @@ function Calendar({
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
-          "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
+          "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
@@ -61,6 +83,7 @@ function Calendar({
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
       }}
       locale={locale}
+      formatters={utils?.formatters}
       {...props}
     />
   )

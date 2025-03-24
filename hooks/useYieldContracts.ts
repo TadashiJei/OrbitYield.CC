@@ -206,8 +206,31 @@ export function useYieldContracts({ onError }: UseYieldContractsProps = {}) {
   
   // Function to get all user positions across strategies
   const getAllUserPositions = async () => {
-    if (!address || !contracts.aggregator) {
-      throw new Error('Wallet not connected or contracts not initialized');
+    if (!address) {
+      throw new Error('Wallet not connected');
+    }
+    
+    // If contracts aren't initialized or we're in development mode, return mock data
+    if (!contracts.aggregator || 
+        YIELD_AGGREGATOR_ADDRESS === '0x1234567890123456789012345678901234567890') {
+      console.log('Using mock data for user positions (contract not available)');
+      // Return mock positions data for development/demo
+      return [
+        {
+          strategy: '0xStrategy1',
+          asset: '0xAsset1',
+          amount: '1000000000000000000', // 1 ETH in wei
+          entryTimestamp: Math.floor(Date.now() / 1000) - 86400 * 7, // 7 days ago
+          lastUpdateTimestamp: Math.floor(Date.now() / 1000) - 86400 // 1 day ago
+        },
+        {
+          strategy: '0xStrategy2',
+          asset: '0xAsset2',
+          amount: '500000000000000000', // 0.5 ETH in wei
+          entryTimestamp: Math.floor(Date.now() / 1000) - 86400 * 14, // 14 days ago
+          lastUpdateTimestamp: Math.floor(Date.now() / 1000) - 86400 * 2 // 2 days ago
+        }
+      ];
     }
     
     try {
@@ -222,6 +245,28 @@ export function useYieldContracts({ onError }: UseYieldContractsProps = {}) {
     } catch (error) {
       console.error('Error getting all user positions:', error);
       onError?.(error as Error);
+      
+      // If contract call fails, return mock data in development
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Falling back to mock data after contract error');
+        return [
+          {
+            strategy: '0xStrategy1',
+            asset: '0xAsset1',
+            amount: '1000000000000000000', // 1 ETH in wei
+            entryTimestamp: Math.floor(Date.now() / 1000) - 86400 * 7, // 7 days ago
+            lastUpdateTimestamp: Math.floor(Date.now() / 1000) - 86400 // 1 day ago
+          },
+          {
+            strategy: '0xStrategy2',
+            asset: '0xAsset2',
+            amount: '500000000000000000', // 0.5 ETH in wei
+            entryTimestamp: Math.floor(Date.now() / 1000) - 86400 * 14, // 14 days ago
+            lastUpdateTimestamp: Math.floor(Date.now() / 1000) - 86400 * 2 // 2 days ago
+          }
+        ];
+      }
+      
       throw error;
     }
   };

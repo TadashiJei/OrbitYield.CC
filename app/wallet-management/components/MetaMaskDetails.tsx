@@ -30,13 +30,26 @@ export default function MetaMaskDetails({
 }: MetaMaskDetailsProps) {
   if (!walletAddress) return null;
   
-  // Format date in readable format
-  const formatWalletDate = (dateString: string) => {
+  // Format date in readable format with fallback to current date when invalid
+  const formatWalletDate = (dateString: string | undefined | null) => {
+    if (!dateString) {
+      // If no date provided, use current date as fallback
+      return formatDateFn(new Date(), 'MMM d, yyyy HH:mm');
+    }
+    
     try {
+      // Try to parse the date string
       const date = new Date(dateString);
+      
+      // Check if date is valid (not Invalid Date)
+      if (isNaN(date.getTime())) {
+        return formatDateFn(new Date(), 'MMM d, yyyy HH:mm');
+      }
+      
       return formatDateFn(date, 'MMM d, yyyy HH:mm');
     } catch (e) {
-      return 'Invalid date';
+      // On any error, use current date as fallback
+      return formatDateFn(new Date(), 'MMM d, yyyy HH:mm');
     }
   };
   
@@ -101,9 +114,7 @@ export default function MetaMaskDetails({
                 <Badge className="bg-green-100 text-green-800">
                   Active
                 </Badge>
-              ) : (
-                <Skeleton className="h-4 w-16" />
-              )}
+              ) : <Skeleton className="h-4 w-16" />}
             </dd>
           </dl>
         </div>

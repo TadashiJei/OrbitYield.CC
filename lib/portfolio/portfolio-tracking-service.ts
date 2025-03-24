@@ -190,81 +190,71 @@ class SubQueryIndexer implements BlockchainIndexer {
       if (network === SUPPORTED_NETWORKS.POLKADOT.id) {
         opportunities.push({
           id: `pol-stake-${Date.now()}`,
-          name: 'Polkadot Staking',
           strategyAddress: '0x...',
           strategyType: 'staking',
           chain: 'Polkadot',
-          protocol: 'Polkadot',
-          asset: 'DOT',
-          apy: 10 + Math.random() * 2,
-          tvl: 1000000000,
-          riskLevel: 3,
-          description: 'Stake DOT to validators to earn staking rewards',
-          minDeposit: 1
+          protocolName: 'Polkadot',
+          assetSymbol: 'DOT',
+          apy: (10 + Math.random() * 2),
+          tvl: String(1000000000),
+          risk: 3,
+          minDeposit: String(1)
         });
       }
       
       if (network === SUPPORTED_NETWORKS.ACALA.id) {
         opportunities.push({
           id: `aca-lend-${Date.now()}`,
-          name: 'Acala DOT Lending',
           strategyAddress: '0x...',
           strategyType: 'lending',
           chain: 'Acala',
-          protocol: 'Acala',
-          asset: 'DOT',
-          apy: 8 + Math.random() * 2,
-          tvl: 50000000,
-          riskLevel: 4,
-          description: 'Lend DOT on Acala to earn interest',
-          minDeposit: 5
+          protocolName: 'Acala',
+          assetSymbol: 'DOT',
+          apy: (8 + Math.random() * 2),
+          tvl: String(50000000),
+          risk: 4,
+          minDeposit: String(5)
         });
         
         opportunities.push({
           id: `aca-farm-${Date.now()}`,
-          name: 'Acala DOT-ACA Farm',
           strategyAddress: '0x...',
           strategyType: 'farming',
           chain: 'Acala',
-          protocol: 'Acala',
-          asset: 'DOT-ACA',
-          apy: 25 + Math.random() * 5,
-          tvl: 10000000,
-          riskLevel: 6,
-          description: 'Provide DOT-ACA liquidity and farm ACA rewards',
-          minDeposit: 10
+          protocolName: 'Acala',
+          assetSymbol: 'DOT-ACA',
+          apy: (25 + Math.random() * 5),
+          tvl: String(10000000),
+          risk: 6,
+          minDeposit: String(10)
         });
       }
       
       if (network === SUPPORTED_NETWORKS.MOONBEAM.id) {
         opportunities.push({
           id: `moon-lend-${Date.now()}`,
-          name: 'Moonwell USDC Lending',
           strategyAddress: '0x...',
           strategyType: 'lending',
           chain: 'Moonbeam',
-          protocol: 'Moonwell',
-          asset: 'USDC',
-          apy: 6 + Math.random() * 1,
-          tvl: 20000000,
-          riskLevel: 3,
-          description: 'Lend USDC on Moonwell to earn interest',
-          minDeposit: 10
+          protocolName: 'Moonwell',
+          assetSymbol: 'USDC',
+          apy: (6 + Math.random() * 1),
+          tvl: String(20000000),
+          risk: 3,
+          minDeposit: String(10)
         });
         
         opportunities.push({
           id: `moon-lp-${Date.now()}`,
-          name: 'Moonbeam GLMR-USDC LP',
           strategyAddress: '0x...',
-          strategyType: 'liquidity',
+          strategyType: 'farming',
           chain: 'Moonbeam',
-          protocol: 'Moonbeam',
-          asset: 'GLMR-USDC',
-          apy: 18 + Math.random() * 4,
-          tvl: 5000000,
-          riskLevel: 7,
-          description: 'Provide GLMR-USDC liquidity on Moonbeam',
-          minDeposit: 50
+          protocolName: 'Moonbeam',
+          assetSymbol: 'GLMR-USDC',
+          apy: (18 + Math.random() * 4),
+          tvl: String(5000000),
+          risk: 7,
+          minDeposit: String(50)
         });
       }
       

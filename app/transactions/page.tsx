@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Card, 
   CardContent, 
   CardDescription, 
+  CardFooter, 
   CardHeader, 
   CardTitle,
-  CardFooter 
 } from '@/components/ui/card';
 import {
   Table,
@@ -36,7 +36,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
@@ -58,6 +58,25 @@ import {
 import MetaMaskConnector from '@/components/wallet/MetaMaskConnector';
 import Link from 'next/link';
 import { format, formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { toast } from '@/components/ui/use-toast';
+
+// Define Transaction interface
+interface Transaction {
+  _id: string;
+  type: string;
+  status: string;
+  amount: string;
+  tokenSymbol: string;
+  timestamp: string;
+  chain?: string;
+  from?: string;
+  to?: string;
+  transactionHash?: string;
+  opportunityId?: string;
+  investmentId?: string;
+  [key: string]: any; // For any additional properties
+}
 
 // Transaction type badge color mapping
 const typeColorMap: Record<string, string> = {
@@ -79,7 +98,7 @@ const statusColorMap: Record<string, string> = {
 
 export default function TransactionsPage() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedTxId, setExpandedTxId] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -150,12 +169,12 @@ export default function TransactionsPage() {
   };
 
   // Extract unique values for filter options
-  const extractFilterOptions = (data: any[]) => {
+  const extractFilterOptions = (data: Transaction[]) => {
     const chains = [...new Set(data.map(tx => tx.chain).filter(Boolean))];
     const types = [...new Set(data.map(tx => tx.type).filter(Boolean))];
     
-    setAvailableChains(chains);
-    setAvailableTypes(types);
+    setAvailableChains(chains as string[]);
+    setAvailableTypes(types as string[]);
   };
 
   // Apply filters
@@ -216,7 +235,7 @@ export default function TransactionsPage() {
       if (data.success && data.data.length > 0) {
         // Create CSV content
         const headers = ['Date', 'Type', 'Amount', 'Currency', 'Chain', 'Status', 'Transaction Hash'];
-        const rows = data.data.map((tx: any) => [
+        const rows = data.data.map((tx: Transaction) => [
           formatDate(tx.timestamp),
           tx.type,
           tx.amount,
@@ -244,7 +263,25 @@ export default function TransactionsPage() {
       }
     } catch (error) {
       console.error('Error downloading transaction history:', error);
+      toast({
+        title: 'Download Failed',
+        description: 'There was an error downloading your transaction history.',
+        variant: 'destructive'
+      });
     }
+  };
+
+  // Calculate actual numeric value for sorting
+  const getNumericValue = (row: Transaction, columnId: keyof Transaction): number => {
+    if (columnId === 'amount') {
+      return parseFloat(row.amount || '0');
+    }
+    
+    if (columnId === 'timestamp') {
+      return new Date(row.timestamp).getTime();
+    }
+    
+    return 0;
   };
 
   return (
@@ -252,11 +289,15 @@ export default function TransactionsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" asChild className="mr-2">
-              <Link href="/dashboard">
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
-            </Button>
+            <Link 
+              href="/dashboard" 
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "icon" }),
+                "mr-2"
+              )}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
             <h1 className="text-3xl font-bold">Transaction History</h1>
           </div>
           <p className="text-muted-foreground mt-2">
@@ -311,25 +352,27 @@ export default function TransactionsPage() {
                   />
                 </div>
                 
-                <Button 
-                  variant="outline" 
-                  size="sm"
+                <Link 
+                  href="#"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
                   onClick={() => setFiltersOpen(!filtersOpen)}
-                  className="gap-1"
                 >
                   <Filter className="h-4 w-4" />
                   Filters
-                </Button>
+                </Link>
                 
-                <Button 
-                  variant="outline" 
-                  size="sm"
+                <Link 
+                  href="#"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
                   onClick={downloadTransactionHistory}
-                  className="gap-1"
                 >
                   <Download className="h-4 w-4" />
                   Export
-                </Button>
+                </Link>
               </div>
             </div>
             
@@ -401,12 +444,24 @@ export default function TransactionsPage() {
                 </div>
                 
                 <div className="md:col-span-4 flex justify-end">
-                  <Button variant="outline" onClick={resetFilters} className="mr-2">
+                  <Link 
+                    href="#"
+                    className={cn(
+                      buttonVariants({ variant: "outline" })
+                    )}
+                    onClick={resetFilters}
+                  >
                     Reset Filters
-                  </Button>
-                  <Button onClick={applyFilters}>
+                  </Link>
+                  <Link 
+                    href="#"
+                    className={cn(
+                      buttonVariants({ variant: "default" })
+                    )}
+                    onClick={applyFilters}
+                  >
                     Apply Filters
-                  </Button>
+                  </Link>
                 </div>
               </div>
             )}
@@ -437,7 +492,7 @@ export default function TransactionsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {transactions.map((tx) => (
+                    {transactions.map((tx: Transaction) => (
                       <React.Fragment key={tx._id}>
                         <TableRow 
                           className={expandedTxId === tx._id ? 'bg-accent/50' : ''}
@@ -483,18 +538,17 @@ export default function TransactionsPage() {
                           </TableCell>
                           <TableCell className="text-right">
                             {tx.transactionHash && (
-                              <Button size="sm" variant="ghost" asChild>
-                                <a
-                                  href={`https://${tx.chain || 'polkadot'}.subscan.io/tx/${tx.transactionHash}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="flex items-center gap-1"
-                                >
-                                  <ExternalLink className="h-3.5 w-3.5" />
-                                  Explorer
-                                </a>
-                              </Button>
+                              <Link 
+                                href={`https://${tx.chain || 'polkadot'}.subscan.io/tx/${tx.transactionHash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={cn(
+                                  buttonVariants({ variant: "ghost", size: "sm" })
+                                )}
+                              >
+                                <ExternalLink className="h-3.5 w-3.5" />
+                                Explorer
+                              </Link>
                             )}
                           </TableCell>
                         </TableRow>
@@ -513,15 +567,16 @@ export default function TransactionsPage() {
                                     <dt className="text-muted-foreground">Hash:</dt>
                                     <dd className="truncate">
                                       {tx.transactionHash ? (
-                                        <a 
+                                        <Link 
                                           href={`https://${tx.chain || 'polkadot'}.subscan.io/tx/${tx.transactionHash}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          className="text-blue-600 hover:underline"
-                                          onClick={(e) => e.stopPropagation()}
+                                          className={cn(
+                                            buttonVariants({ variant: "ghost", size: "sm" })
+                                          )}
                                         >
                                           {tx.transactionHash}
-                                        </a>
+                                        </Link>
                                       ) : 'N/A'}
                                     </dd>
                                     
@@ -575,8 +630,9 @@ export default function TransactionsPage() {
                                         <dd className="truncate">
                                           <Link 
                                             href={`/opportunities/${tx.opportunityId}`}
-                                            className="text-blue-600 hover:underline"
-                                            onClick={(e) => e.stopPropagation()}
+                                            className={cn(
+                                              buttonVariants({ variant: "ghost", size: "sm" })
+                                            )}
                                           >
                                             View Opportunity
                                           </Link>
@@ -590,8 +646,9 @@ export default function TransactionsPage() {
                                         <dd className="truncate">
                                           <Link 
                                             href={`/investments?id=${tx.investmentId}`}
-                                            className="text-blue-600 hover:underline"
-                                            onClick={(e) => e.stopPropagation()}
+                                            className={cn(
+                                              buttonVariants({ variant: "ghost", size: "sm" })
+                                            )}
                                           >
                                             View Investment
                                           </Link>
@@ -635,11 +692,24 @@ export default function TransactionsPage() {
                     : "You don't have any transactions yet. Start investing to see your transaction history."}
                 </p>
                 {(searchQuery || typeFilter || statusFilter || chainFilter || dateFilter) ? (
-                  <Button onClick={resetFilters}>Reset Filters</Button>
+                  <Link 
+                    href="#"
+                    className={cn(
+                      buttonVariants({ variant: "default" })
+                    )}
+                    onClick={resetFilters}
+                  >
+                    Reset Filters
+                  </Link>
                 ) : (
-                  <Button asChild>
-                    <Link href="/opportunities">Browse Opportunities</Link>
-                  </Button>
+                  <Link 
+                    href="/opportunities"
+                    className={cn(
+                      buttonVariants({ variant: "default" })
+                    )}
+                  >
+                    Browse Opportunities
+                  </Link>
                 )}
               </div>
             )}

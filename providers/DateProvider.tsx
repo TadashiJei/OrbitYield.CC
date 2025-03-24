@@ -3,7 +3,10 @@
 import * as React from "react";
 import { format, parse, isValid, addDays, Locale } from 'date-fns';
 import enUS from 'date-fns/locale/en-US';
-import { DayPicker } from "react-day-picker";
+import { type Matcher, type Formatters } from "react-day-picker";
+
+// Create a context for the date adapter
+const DateAdapterContext = React.createContext<DateAdapterContextValue | undefined>(undefined);
 
 // This is a proper implementation of the DateProvider that includes the full
 // date adapter implementation required by react-day-picker
@@ -41,6 +44,81 @@ const utils = {
   toISODate: (date: Date): string => {
     return date.toISOString().split('T')[0];
   },
+  // Get today's date
+  today: (): Date => {
+    return new Date();
+  },
+  // Get current date/time
+  now: (): Date => {
+    return new Date();
+  },
+  // Get day of the month
+  getDate: (date: Date): number => {
+    return date.getDate();
+  },
+  // Get month (0-11)
+  getMonth: (date: Date): number => {
+    return date.getMonth();
+  },
+  // Get year
+  getYear: (date: Date): number => {
+    return date.getFullYear();
+  },
+  // Convert date parts to Date object
+  setDate: (date: Date, day: number): Date => {
+    const newDate = new Date(date);
+    newDate.setDate(day);
+    return newDate;
+  },
+  // Set month
+  setMonth: (date: Date, month: number): Date => {
+    const newDate = new Date(date);
+    newDate.setMonth(month);
+    return newDate;
+  },
+  // Set year
+  setYear: (date: Date, year: number): Date => {
+    const newDate = new Date(date);
+    newDate.setFullYear(year);
+    return newDate;
+  },
+  // Get days in month
+  getDaysInMonth: (date: Date): number => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  },
+  // Get start of week
+  startOfWeek: (date: Date): Date => {
+    const newDate = new Date(date);
+    const day = newDate.getDay();
+    const diff = newDate.getDate() - day;
+    newDate.setDate(diff);
+    return newDate;
+  },
+  // Get end of week
+  endOfWeek: (date: Date): Date => {
+    const newDate = new Date(date);
+    const day = newDate.getDay();
+    const diff = newDate.getDate() + (6 - day);
+    newDate.setDate(diff);
+    return newDate;
+  },
+  // Compare dates
+  isSameDay: (date1: Date, date2: Date): boolean => {
+    return date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getFullYear() === date2.getFullYear();
+  },
+  // Formatters for react-day-picker
+  formatters: {
+    formatDay: (date: Date, options?: { locale?: any }) => format(date, 'd', { locale: options?.locale || enUS }),
+    formatMonth: (date: Date, options?: { locale?: any }) => format(date, 'MMMM', { locale: options?.locale || enUS }),
+    formatMonthCaption: (date: Date, options?: { locale?: any }) => 
+      format(date, 'MMMM yyyy', { locale: options?.locale || enUS }),
+    formatWeekday: (date: Date, options?: { locale?: any }) => 
+      format(date, 'EEEEEE', { locale: options?.locale || enUS }),
+    formatYearCaption: (date: Date, options?: { locale?: any }) => 
+      format(date, 'yyyy', { locale: options?.locale || enUS })
+  }
 };
 
 // Date adapter context
@@ -49,46 +127,49 @@ type DateAdapterContextValue = {
   utils: typeof utils;
 };
 
-const DateAdapterContext = React.createContext<DateAdapterContextValue>({
-  locale: enUS,
-  utils,
-});
-
 // Hook to use the date adapter
 export function useDateAdapter() {
-  return React.useContext(DateAdapterContext);
+  const context = React.useContext(DateAdapterContext);
+  if (context === undefined) {
+    throw new Error("useDateAdapter must be used within a DateProvider");
+  }
+  return context;
 }
 
 // Helper function to format dates consistently throughout the app
 export function formatDate(date: Date | number, formatStr: string = "PPP"): string {
-  if (typeof date === 'number') {
-    date = new Date(date);
-  }
-  return utils.format(date, formatStr);
+  const dateObj = typeof date === 'number' ? new Date(date) : date;
+  return format(dateObj, formatStr, { locale: enUS });
 }
 
 // Function to format a timestamp (in seconds) to a readable date
 export function formatTimestamp(timestamp: number, formatStr: string = "PPP"): string {
-  return formatDate(timestamp * 1000, formatStr);
+  // Handle both millisecond timestamps and second timestamps
+  const date = new Date(timestamp > 1000000000000 ? timestamp : timestamp * 1000);
+  return format(date, formatStr, { locale: enUS });
 }
 
 // Helper to format a date relative to now (e.g., "2 days ago")
 export function formatRelative(date: Date | number): string {
-  if (typeof date === 'number') {
-    date = new Date(date);
-  }
-  
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.round(diffMs / 1000);
-  const diffMin = Math.round(diffSec / 60);
-  const diffHour = Math.round(diffMin / 60);
-  const diffDay = Math.round(diffHour / 24);
+  const dateObj = typeof date === 'number' ? new Date(date) : date;
+  if (!isValid(dateObj)) return "Invalid date";
   
-  if (diffSec < 60) return `${diffSec} seconds ago`;
-  if (diffMin < 60) return `${diffMin} minutes ago`;
-  if (diffHour < 24) return `${diffHour} hours ago`;
-  if (diffDay < 30) return `${diffDay} days ago`;
+  const diffMs = now.getTime() - dateObj.getTime();
+  const diffSecs = Math.floor(diffMs / 1000);
+  const diffMins = Math.floor(diffSecs / 60);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
   
-  return formatDate(date, "MMM d, yyyy");
+  if (diffSecs < 60) {
+    return 'just now';
+  } else if (diffMins < 60) {
+    return `${diffMins} minute${diffMins === 1 ? '' : 's'} ago`;
+  } else if (diffHours < 24) {
+    return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
+  } else if (diffDays < 30) {
+    return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+  } else {
+    return format(dateObj, 'PPP', { locale: enUS });
+  }
 }

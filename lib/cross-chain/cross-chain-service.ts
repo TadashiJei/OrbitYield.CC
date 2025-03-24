@@ -11,6 +11,7 @@ export interface CrossChainAsset {
   decimals: number;
   logoUrl?: string;
   isNative: boolean;
+  assetPrice?: number; // Price per token in USD
 }
 
 export interface ChainInfo {

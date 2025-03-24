@@ -1,10 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { TokenAllocationChart } from "./TokenAllocationChart"
 import { ArrowRight, Award, Gem, BarChart3, ShieldCheck, Zap, Layers, Target } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "Tokenomics | OrbitYield",
@@ -45,12 +47,16 @@ export default function Tokenomics() {
               boosting capabilities.
             </p>
             <div className="mt-10 flex items-center gap-x-6">
-              <Button asChild size="lg" className="rounded-full">
-                <Link href="#token-utility">
-                  Explore Token Utility
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <Link 
+                href="#token-utility" 
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "rounded-full"
+                )}
+              >
+                Explore Token Utility
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
               <Link 
                 href="https://docs.orbityield.cc/tokenomics" 
                 className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary transition"
@@ -308,17 +314,25 @@ export default function Tokenomics() {
               Join the OrbitYield ecosystem and unlock the full potential of your crypto assets with the ORBIT token.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg" className="rounded-full" asChild>
-                <Link href="/app">
-                  Enter App
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant="outline" size="lg" className="rounded-full" asChild>
-                <Link href="/blog/polkadot-philippines-hackathon-2025">
-                  Learn More
-                </Link>
-              </Button>
+              <Link 
+                href="/app"
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "rounded-full"
+                )}
+              >
+                Enter App
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+              <Link 
+                href="/blog/polkadot-philippines-hackathon-2025"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg" }),
+                  "rounded-full"
+                )}
+              >
+                Learn More
+              </Link>
             </div>
           </div>
         </div>

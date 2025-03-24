@@ -75,12 +75,22 @@ export default function MetaMaskConnector({
       
       // Check if MetaMask is available
       if (!isMetaMaskAvailable) {
-        // Try to check again at runtime
-        if (typeof window !== 'undefined' && window.ethereum) {
-          console.log('MetaMask detected at runtime');
-          // Continue with connection
+        if (typeof window !== 'undefined') {
+          // Check if there are browser extensions that could be blocking MetaMask detection
+          if (window.ethereum === undefined) {
+            setError('MetaMask is not installed. Please install MetaMask to continue.');
+            console.error('MetaMask not detected. window.ethereum is undefined.');
+            
+            // Redirect user to install MetaMask if they don't have it
+            if (confirm('Would you like to install MetaMask now?')) {
+              window.open('https://metamask.io/download/', '_blank');
+            }
+            
+            setIsConnecting(false);
+            return;
+          }
         } else {
-          setError('MetaMask is not installed. Please install MetaMask to continue.');
+          setError('Could not detect browser environment. Please try again.');
           setIsConnecting(false);
           return;
         }
@@ -89,8 +99,25 @@ export default function MetaMaskConnector({
       // Force disconnect first to clear any stale state
       disconnect();
       
-      // Connect using wagmi
-      connect({ connector: injected() });
+      // Direct ethereum request first to ensure permissions are granted
+      if (window.ethereum) {
+        try {
+          console.log('Requesting ethereum accounts directly...');
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          console.log('Accounts received:', accounts);
+          
+          if (accounts && accounts.length > 0) {
+            // Now connect using wagmi after direct request succeeded
+            connect({ connector: injected() });
+          }
+        } catch (err) {
+          console.error('Direct ethereum request failed:', err);
+          throw err; // Rethrow to be caught by outer catch block
+        }
+      } else {
+        // Fallback to wagmi only
+        connect({ connector: injected() });
+      }
       
       // If connection successful and we have an address, save the connection
       if (address !== undefined && address !== null) {
@@ -183,9 +210,15 @@ export default function MetaMaskConnector({
         <Button
           variant={buttonVariant}
           size={buttonSize}
-          onClick={connectWallet}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Connect wallet button clicked');
+            connectWallet();
+          }}
           disabled={isConnecting || false}
           className="flex items-center justify-center w-full py-6 text-lg font-medium"
+          suppressHydrationWarning
         >
           <Wallet className="mr-2 h-5 w-5" />
           {isConnecting ? 'Connecting...' : buttonText}

@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 
 const navigation = [
@@ -84,10 +84,15 @@ export default function Header() {
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div>
-            <Link href="/dashboard">
-              <Button className="rounded-full bg-primary/90 hover:bg-primary text-white transition-colors">
-                Launch App
-              </Button>
+            <Link 
+              href="/dashboard" 
+              prefetch={true}
+              className={cn(
+                buttonVariants(),
+                "rounded-full bg-primary/90 hover:bg-primary text-white transition-colors"
+              )}
+            >
+              Launch App
             </Link>
           </div>
         </div>
@@ -153,10 +158,16 @@ export default function Header() {
               </div>
               <div className="py-6">
                 <div>
-                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full rounded-full bg-primary/90 hover:bg-primary text-white transition-colors">
-                      Launch App
-                    </Button>
+                  <Link 
+                    href="/dashboard" 
+                    prefetch={true} 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      buttonVariants(),
+                      "w-full rounded-full bg-primary/90 hover:bg-primary text-white transition-colors"
+                    )}
+                  >
+                    Launch App
                   </Link>
                 </div>
               </div>

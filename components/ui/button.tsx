@@ -1,6 +1,9 @@
+'use client';
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 
@@ -37,20 +40,36 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  href?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    )
+  ({ className, variant, size, asChild = false, href, ...props }, ref) => {
+    const classNames = cn(buttonVariants({ variant, size, className }));
+    
+    // If asChild is true, render a Slot
+    if (asChild) {
+      return <Slot className={classNames} ref={ref} {...props} />;
+    }
+    
+    // If href is provided, render a Link component
+    if (href) {
+      return (
+        <Link 
+          href={href} 
+          className={classNames}
+          passHref
+        >
+          {props.children}
+        </Link>
+      );
+    }
+    
+    // Otherwise render a button
+    return <button className={classNames} ref={ref} {...props} />;
   }
-)
+);
+
 Button.displayName = "Button"
 
 export { Button, buttonVariants }

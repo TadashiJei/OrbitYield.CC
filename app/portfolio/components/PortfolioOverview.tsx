@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { buttonVariants } from '@/components/ui/button';
 import { PortfolioSummary } from './PortfolioSummary';
 import { CrossChainAssets } from '@/app/cross-chain/components/CrossChainAssets';
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatCurrency, formatPercent } from '@/lib/utils';
+import { formatCurrency, formatPercent, cn } from '@/lib/utils';
 import { Wallet, TrendingUp, ArrowRight, PieChart, BarChart3 } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { Doughnut, Line } from 'react-chartjs-2';
@@ -24,6 +25,8 @@ import {
   Title
 } from 'chart.js';
 import 'chart.js/auto';
+// Import date adapter for Chart.js
+import 'chartjs-adapter-date-fns';
 
 // Register Chart.js components
 ChartJS.register(
@@ -183,14 +186,24 @@ export function PortfolioOverview() {
                 </div>
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" onClick={() => window.location.href = '/yield-opportunities'}>
+                <Link 
+                  href="/yield-opportunities"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
+                >
                   <TrendingUp className="h-4 w-4 mr-2" />
                   Find Opportunities
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => window.location.href = '/cross-chain?tab=transfer'}>
+                </Link>
+                <Link 
+                  href="/cross-chain?tab=transfer"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
+                >
                   <ArrowRight className="h-4 w-4 mr-2" />
                   Transfer Assets
-                </Button>
+                </Link>
               </div>
             </div>
             
@@ -313,6 +326,47 @@ export function PortfolioOverview() {
               )}
             </TabsContent>
           </Tabs>
+
+          {/* Add a "More Actions" section */}
+          <div className="mt-8">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl font-bold">More Actions</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Link 
+                  href="/dashboard"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
+                >
+                  Dashboard Overview
+                </Link>
+                <Link 
+                  href="/portfolio?tab=positions"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
+                >
+                  View All Positions
+                </Link>
+                <Link 
+                  href="/portfolio?tab=optimize"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
+                >
+                  Optimize Portfolio
+                </Link>
+                <Link 
+                  href="/transactions"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" })
+                  )}
+                >
+                  Transaction History
+                </Link>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </div>

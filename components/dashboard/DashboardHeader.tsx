@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { 
   Menu, 
   X, 
@@ -84,10 +84,11 @@ export default function DashboardHeader({ walletAddress }: { walletAddress: stri
               <Image 
                 src="/Polkadot_Token_Pink.svg" 
                 alt="Polkadot Logo" 
-                width={32} 
-                height={32}
+                width={28} 
+                height={28}
+                className="min-w-[28px]"
               />
-              <span className="text-xl font-bold">OrbitYield</span>
+              <span className="text-xl font-bold hidden sm:inline">OrbitYield</span>
             </div>
           </Link>
         </div>
@@ -156,11 +157,14 @@ export default function DashboardHeader({ walletAddress }: { walletAddress: stri
               </DropdownMenu>
             </>
           ) : (
-            <Link href="/">
-              <Button variant="outline" size="sm">
-                Back to Home
-              </Button>
-            </Link>
+            <Button 
+              href="/"
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+            >
+              Back to Home
+            </Button>
           )}
         </div>
         
@@ -203,8 +207,9 @@ export default function DashboardHeader({ walletAddress }: { walletAddress: stri
                 <Image 
                   src="/Polkadot_Token_Pink.svg" 
                   alt="Polkadot Logo" 
-                  width={32} 
-                  height={32}
+                  width={28} 
+                  height={28}
+                  className="min-w-[28px]"
                 />
                 <span className="text-xl font-bold">OrbitYield</span>
               </div>
@@ -263,10 +268,15 @@ export default function DashboardHeader({ walletAddress }: { walletAddress: stri
                     </button>
                   </div>
                 ) : (
-                  <Link href="/" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full" variant="outline">
-                      Back to Home
-                    </Button>
+                  <Link 
+                    href="/" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      buttonVariants({ variant: "outline" }),
+                      "w-full"
+                    )}
+                  >
+                    Back to Home
                   </Link>
                 )}
               </div>

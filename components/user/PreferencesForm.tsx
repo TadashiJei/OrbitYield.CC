@@ -321,54 +321,51 @@ export function PreferencesForm({ onSave }: PreferencesFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Risk Tolerance</FormLabel>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                           <Button
                             type="button"
                             variant={field.value === RiskTolerance.CONSERVATIVE ? 'default' : 'outline'}
-                            className="flex flex-col items-center p-4 h-auto"
+                            className="flex flex-col items-center p-4 h-auto w-full"
                             onClick={() => applyRiskPreset(RiskTolerance.CONSERVATIVE)}
                           >
                             <Shield className="h-5 w-5 mb-2" />
-                            <span>Conservative</span>
-                            <span className="text-xs text-muted-foreground mt-1">Lower risk, lower returns</span>
+                            <span className="font-medium">Conservative</span>
+                            <span className="text-xs text-muted-foreground mt-1 text-center">Lower risk, lower returns</span>
                           </Button>
                           
                           <Button
                             type="button"
                             variant={field.value === RiskTolerance.MODERATE ? 'default' : 'outline'}
-                            className="flex flex-col items-center p-4 h-auto"
+                            className="flex flex-col items-center p-4 h-auto w-full"
                             onClick={() => applyRiskPreset(RiskTolerance.MODERATE)}
                           >
                             <ArrowRightLeft className="h-5 w-5 mb-2" />
-                            <span>Moderate</span>
-                            <span className="text-xs text-muted-foreground mt-1">Balanced risk-return</span>
+                            <span className="font-medium">Moderate</span>
+                            <span className="text-xs text-muted-foreground mt-1 text-center">Balanced risk-return</span>
                           </Button>
                           
                           <Button
                             type="button"
                             variant={field.value === RiskTolerance.AGGRESSIVE ? 'default' : 'outline'}
-                            className="flex flex-col items-center p-4 h-auto"
+                            className="flex flex-col items-center p-4 h-auto w-full"
                             onClick={() => applyRiskPreset(RiskTolerance.AGGRESSIVE)}
                           >
                             <Rocket className="h-5 w-5 mb-2" />
-                            <span>Aggressive</span>
-                            <span className="text-xs text-muted-foreground mt-1">Higher risk, higher returns</span>
+                            <span className="font-medium">Aggressive</span>
+                            <span className="text-xs text-muted-foreground mt-1 text-center">Higher risk, higher returns</span>
                           </Button>
                           
                           <Button
                             type="button"
                             variant={field.value === RiskTolerance.CUSTOM ? 'default' : 'outline'}
-                            className="flex flex-col items-center p-4 h-auto"
-                            onClick={() => form.setValue('riskTolerance', RiskTolerance.CUSTOM)}
+                            className="flex flex-col items-center p-4 h-auto w-full"
+                            onClick={() => applyRiskPreset(RiskTolerance.CUSTOM)}
                           >
                             <Sliders className="h-5 w-5 mb-2" />
-                            <span>Custom</span>
-                            <span className="text-xs text-muted-foreground mt-1">Your specific settings</span>
+                            <span className="font-medium">Custom</span>
+                            <span className="text-xs text-muted-foreground mt-1 text-center">Your specific settings</span>
                           </Button>
                         </div>
-                        <FormDescription>
-                          Choose a risk profile for yield optimization or select custom for granular control
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}

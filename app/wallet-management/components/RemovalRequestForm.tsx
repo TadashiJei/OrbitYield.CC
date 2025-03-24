@@ -9,12 +9,14 @@ interface RemovalRequestFormProps {
   walletAddress: string | null;
   onSubmit: (reason: string, email: string) => Promise<void>;
   hasPendingRequest?: boolean;
+  onCancel?: () => void;
 }
 
 export default function RemovalRequestForm({ 
   walletAddress, 
   onSubmit,
-  hasPendingRequest = false
+  hasPendingRequest = false,
+  onCancel = () => {} 
 }: RemovalRequestFormProps) {
   const [email, setEmail] = useState('');
   const [reason, setReason] = useState('');
@@ -52,6 +54,14 @@ export default function RemovalRequestForm({
     } finally {
       setLoading(false);
     }
+  };
+  
+  // Handle cancel - clear form
+  const handleCancel = () => {
+    setEmail('');
+    setReason('');
+    setError(null);
+    onCancel();
   };
   
   return (
@@ -118,7 +128,7 @@ export default function RemovalRequestForm({
         <Button 
           type="button" 
           variant="outline" 
-          onClick={onCancel}
+          onClick={handleCancel}
           disabled={loading}
         >
           Cancel

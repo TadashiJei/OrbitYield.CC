@@ -18,7 +18,7 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   ArrowUpDown, 
@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 // Define the investment interface
 interface Investment {
@@ -132,9 +133,15 @@ export default function InvestmentsList({
           <p className="text-muted-foreground mt-2">
             You haven&apos;t made any investments yet. Explore opportunities to start earning yield.
           </p>
-          <Button className="mt-4" asChild>
-            <Link href="/opportunities">View Opportunities</Link>
-          </Button>
+          <Link 
+            href="/opportunities" 
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "mt-4"
+            )}
+          >
+            View Opportunities
+          </Link>
         </CardContent>
       </Card>
     );
@@ -253,31 +260,26 @@ export default function InvestmentsList({
                       </>
                     )}
                     
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
+                    <Link 
+                      href={`/investments/${investment._id}`}
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "sm" })
+                      )}
                     >
-                      <Link href={`/investments/${investment._id}`}>
-                        Details
-                      </Link>
-                    </Button>
+                      View
+                    </Link>
                     
                     {investment.transactionHash && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        asChild
-                        title="View transaction"
+                      <Link
+                        href={`https://explorer.orbityield.example.com/tx/${investment.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={cn(
+                          buttonVariants({ variant: "ghost", size: "sm" })
+                        )}
                       >
-                        <a 
-                          href={`https://polkadot.subscan.io/extrinsic/${investment.transactionHash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
-                      </Button>
+                        Tx <ExternalLink className="ml-1 h-3 w-3" />
+                      </Link>
                     )}
                   </div>
                 </TableCell>
@@ -291,11 +293,14 @@ export default function InvestmentsList({
           Showing {investments.length} investment{investments.length !== 1 ? 's' : ''}
         </div>
         
-        <Button variant="outline" asChild>
-          <Link href="/opportunities">
-            Explore More Opportunities
-          </Link>
-        </Button>
+        <Link 
+          href="/opportunities"
+          className={cn(
+            buttonVariants({ variant: "outline" })
+          )}
+        >
+          Browse More Opportunities
+        </Link>
       </CardFooter>
     </Card>
   );
