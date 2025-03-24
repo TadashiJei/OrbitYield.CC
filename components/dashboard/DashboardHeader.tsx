@@ -218,72 +218,55 @@ export default function DashboardHeader({ walletAddress }: { walletAddress: stri
               <X className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          
-          {walletAddress && (
-            <div className="mt-4 flex items-center">
-              <Avatar className="h-8 w-8 mr-3">
-                <AvatarFallback className="bg-primary/10 text-primary">
-                  {walletAddress?.substring(2, 4)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-sm">
-                <p className="font-medium">{formatWalletAddress(walletAddress)}</p>
-                <p className="text-gray-500 text-xs">Connected</p>
-              </div>
-            </div>
-          )}
-          
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
                 {appNavigation.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={cn(
-                        "-mx-3 flex items-center gap-2 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 transition-colors",
-                        pathname === item.href && "text-primary bg-primary/5",
-                      )}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Icon className="h-5 w-5" />
-                      {item.name}
-                    </Link>
+                    <div key={item.name}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "flex items-center gap-2 -mx-3 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 transition-colors",
+                          pathname === item.href && "text-primary bg-primary/5",
+                        )}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Icon className="h-5 w-5" />
+                        {item.name}
+                      </Link>
+                    </div>
                   );
                 })}
               </div>
-              
               <div className="py-6">
-                <Link 
-                  href="/settings" 
-                  className="-mx-3 flex items-center gap-2 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Settings className="h-5 w-5" />
-                  Settings
-                </Link>
-                
                 {walletAddress ? (
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="-mx-3 mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-red-600 hover:bg-red-50"
-                  >
-                    <LogOut className="h-5 w-5" />
-                    Disconnect Wallet
-                  </button>
+                  <div className="space-y-3">
+                    <Link 
+                      href="/settings"
+                      className="flex items-center gap-2 -mx-3 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Settings className="h-5 w-5" />
+                      Settings
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="flex w-full items-center gap-2 -mx-3 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Disconnect
+                    </button>
+                  </div>
                 ) : (
-                  <Link 
-                    href="/" 
-                    className="-mx-3 mt-2 flex items-center gap-2 rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <LogOut className="h-5 w-5" />
-                    Back to Home
+                  <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full" variant="outline">
+                      Back to Home
+                    </Button>
                   </Link>
                 )}
               </div>

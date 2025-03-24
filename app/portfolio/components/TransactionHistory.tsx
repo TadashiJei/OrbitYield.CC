@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from '@/components/ui/use-toast';
+import { formatTimestamp } from '@/providers/DateProvider';
 
 interface Transaction {
   id: string;
@@ -151,8 +152,7 @@ export function TransactionHistory() {
   
   // Format date
   const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleString();
+    return formatTimestamp(timestamp, 'PPpp');
   };
   
   // Shorten transaction hash

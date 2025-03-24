@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { WagmiProvider } from "@/providers/WagmiProvider";
+import { DateProvider } from "@/providers/DateProvider";
 import AppLayout from "./AppLayout";
 import { usePathname } from "next/navigation";
 
@@ -32,13 +33,15 @@ export default function RootClientLayout({
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
       <WagmiProvider>
-        <div className="flex min-h-screen flex-col bg-gray-50">
-          {!isAppPath && <Header />}
-          <main className="flex-1">
-            <AppLayout>{children}</AppLayout>
-          </main>
-          {!isAppPath && <Footer />}
-        </div>
+        <DateProvider>
+          <div className="flex min-h-screen flex-col bg-gray-50">
+            {!isAppPath && <Header />}
+            <main className="flex-1">
+              <AppLayout>{children}</AppLayout>
+            </main>
+            {!isAppPath && <Footer />}
+          </div>
+        </DateProvider>
       </WagmiProvider>
     </ThemeProvider>
   );
