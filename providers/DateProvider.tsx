@@ -1,16 +1,62 @@
 'use client';
 
 import * as React from "react";
+import { format, parse, isValid, addDays, Locale } from 'date-fns';
+import enUS from 'date-fns/locale/en-US';
 import { DayPicker } from "react-day-picker";
-import { format } from "date-fns";
 
-// Create a DateProvider component that provides the date formatting capabilities
-export function DateProvider({ children }: { children: React.ReactNode }) {
+// This is a proper implementation of the DateProvider that includes the full
+// date adapter implementation required by react-day-picker
+export function DateProvider({ children, locale = enUS }: { 
+  children: React.ReactNode;
+  locale?: Locale;
+}) {
   return (
-    <>
+    <DateAdapterContext.Provider value={{ locale, utils }}>
       {children}
-    </>
+    </DateAdapterContext.Provider>
   );
+}
+
+// Date utilities used by the date adapter
+const utils = {
+  // Format dates
+  format: (date: Date, formatString: string, locale?: Locale): string => {
+    return format(date, formatString, { locale: locale || enUS });
+  },
+  // Parse a string to a date
+  parse: (dateString: string, formatString: string, referenceDate?: Date, locale?: Locale): Date | undefined => {
+    const parsedDate = parse(dateString, formatString, referenceDate || new Date(), { locale: locale || enUS });
+    return isValid(parsedDate) ? parsedDate : undefined;
+  },
+  // Add days to a date
+  addDays: (date: Date, amount: number): Date => {
+    return addDays(date, amount);
+  },
+  // Check if a date is valid
+  isValid: (date: any): boolean => {
+    return date instanceof Date && isValid(date);
+  },
+  // Convert a date object to a string in ISO format
+  toISODate: (date: Date): string => {
+    return date.toISOString().split('T')[0];
+  },
+};
+
+// Date adapter context
+type DateAdapterContextValue = {
+  locale?: Locale;
+  utils: typeof utils;
+};
+
+const DateAdapterContext = React.createContext<DateAdapterContextValue>({
+  locale: enUS,
+  utils,
+});
+
+// Hook to use the date adapter
+export function useDateAdapter() {
+  return React.useContext(DateAdapterContext);
 }
 
 // Helper function to format dates consistently throughout the app
@@ -18,7 +64,7 @@ export function formatDate(date: Date | number, formatStr: string = "PPP"): stri
   if (typeof date === 'number') {
     date = new Date(date);
   }
-  return format(date, formatStr);
+  return utils.format(date, formatStr);
 }
 
 // Function to format a timestamp (in seconds) to a readable date
